@@ -1,0 +1,25 @@
+scalar Date
+scalar DateTime
+
+enum SortDirectionEnum {
+  ASC
+  DESC
+}
+
+type URL {
+  url: String!
+  type: String!
+}
+
+input URLInput {
+  url: String!
+  type: String!
+}
+
+input QuerySpec {
+  # TODO - specify by page or start/limit?
+  page: Int
+  per_page: Int
+  sort: String
+  direction: SortDirectionEnum
+}
