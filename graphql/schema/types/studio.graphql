@@ -3,7 +3,7 @@ type Studio {
   name: String!
   urls: [URL]!
   parent: Studio
-  added_child_studios: [Studio!]!
+  child_studios: [Studio!]!
 }
 
 input StudioCreateInput {
@@ -36,6 +36,8 @@ input StudioEditInput {
   """Not required for create type"""
   id: ID
   operation: OperationEnum!
+  """Only required for merge type"""
+  merge_source_ids: [ID!]
   """Not required for destroy type"""
   details: StudioEditDetailsInput
   comment: String

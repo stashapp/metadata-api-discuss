@@ -12,10 +12,8 @@ type Query {
   #### Studios ####
 
   # studio names should be unique
-  """Find a studio by ID"""
-  findStudio(id: ID!): Studio
-  # TODO - this could be obtained in the above call. Not sure if necessary
-  findChildStudios(id: ID!): [Studio!]
+  """Find a studio by ID or name"""
+  findStudio(id: ID, name: String): Studio
 
   queryStudios(studio_filter: StudioFilterType, filter: QuerySpec): QueryStudiosResultType!
 
@@ -50,7 +48,7 @@ type Query {
   """Find user by ID or username"""
   findUser(id: ID, username: String): User
 
-  queryUsers(scene_filter: UserFilterType, filter: QuerySpec): QueryUsersResultType!
+  queryUsers(user_filter: UserFilterType, filter: QuerySpec): QueryUsersResultType!
 
 
   #### Version ####

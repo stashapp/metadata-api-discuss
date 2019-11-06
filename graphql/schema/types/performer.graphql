@@ -6,26 +6,66 @@ enum GenderEnum {
   INTERSEX
 }
 
-enum FakeTitsEnum {
-  YES
-  NO
+enum BreastTypeEnum {
+  NATURAL
+  FAKE
   NA
 }
 
 type Measurements {
   cup_size: String
-  # TODO - should these be in cm to be consistent with height?
-  bust: Int
+  band_size: Int
   waist: Int
   hip: Int
 }
 
 input MeasurementsInput {
   cup_size: String
-  # TODO - should these be in cm to be consistent with height?
-  bust: Int
+  band_size: Int
   waist: Int
   hip: Int
+}
+
+enum EthnicityEnum {
+  CAUCASIAN
+  BLACK
+  ASIAN
+  INDIAN
+  LATIN
+  MIDDLE_EASTERN
+  MIXED
+  OTHER
+}
+
+enum EyeColorEnum {
+  BLUE
+  BROWN
+  GREY
+  GREEN
+  HAZEL
+  RED
+}
+
+enum HairColorEnum {
+  BLONDE
+  BRUNETTE
+  BLACK
+  RED
+  AUBURN
+  GREY
+  BALD
+  VARIOUS
+  OTHER
+}
+
+type BodyModification {
+  location: String!
+  description: String
+}
+
+input BodyModificationInput {
+  location: String!
+  description: String
 }
 
 type Performer {
@@ -35,19 +75,20 @@ type Performer {
   aliases: [String!]!
   gender: GenderEnum
   urls: [URL!]!
-  birthdate: Date
-  ethnicity: String
+  birthdate: FuzzyDate
+  age: Int # resolver
+  ethnicity: EthnicityEnum
   country: String
-  eye_color: String
+  eye_color: EyeColorEnum
+  hair_color: HairColorEnum
   """Height in cm"""
   height: Int
   measurements: Measurements!
-  # TODO - is there a better desciptor for this - boob_job? - enhanced?
-  fake_tits: FakeTitsEnum
+  breast_type: BreastTypeEnum
   career_start_year: Int
   career_end_year: Int
-  tattoos: [String!]
-  piercings: [String!]
+  tattoos: [BodyModification!]
+  piercings: [BodyModification!]
 }
 
 input PerformerCreateInput {
@@ -56,17 +97,18 @@ input PerformerCreateInput {
   aliases: [String!]
   gender: GenderEnum
   urls: [URLInput!]
-  birthdate: Date
-  ethnicity: String
+  birthdate: FuzzyDateInput
+  ethnicity: EthnicityEnum
   country: String
-  eye_color: String
+  eye_color: EyeColorEnum
+  hair_color: HairColorEnum
   height: Int
   measurements: MeasurementsInput
-  fake_tits: FakeTitsEnum
+  breast_type: BreastTypeEnum
   career_start_year: Int
   career_end_year: Int
-  tattoos: [String!]
-  piercings: [String!]
+  tattoos: [BodyModificationInput!]
+  piercings: [BodyModificationInput!]
 }
 
 input PerformerUpdateInput {
@@ -76,17 +118,18 @@ input PerformerUpdateInput {
   aliases: [String!]
   gender: GenderEnum
   urls: [URLInput!]
-  birthdate: Date
-  ethnicity: String
+  birthdate: FuzzyDateInput
+  ethnicity: EthnicityEnum
   country: String
-  eye_color: String
+  eye_color: EyeColorEnum
+  hair_color: HairColorEnum
   height: Int
   measurements: MeasurementsInput
-  fake_tits: FakeTitsEnum
+  breast_type: BreastTypeEnum
   career_start_year: Int
   career_end_year: Int
-  tattoos: [String!]
-  piercings: [String!]
+  tattoos: [BodyModificationInput!]
+  piercings: [BodyModificationInput!]
 }
 
 input PerformerDestroyInput {
@@ -99,23 +142,26 @@ input PerformerEditDetailsInput {
   aliases: [String!]
   gender: GenderEnum
   urls: [URLInput!]
-  birthdate: Date
-  ethnicity: String
+  birthdate: FuzzyDateInput
+  ethnicity: EthnicityEnum
   country: String
-  eye_color: String
+  eye_color: EyeColorEnum
+  hair_color: HairColorEnum
   height: Int
   measurements: MeasurementsInput
-  fake_tits: FakeTitsEnum
+  breast_type: BreastTypeEnum
   career_start_year: Int
   career_end_year: Int
-  tattoos: [String!]
-  piercings: [String!]
+  tattoos: [BodyModificationInput!]
+  piercings: [BodyModificationInput!]
 }
 
 input PerformerEditInput {
   """Not required for create type"""
   id: ID
   operation: OperationEnum!
+  """Only required for merge type"""
+  merge_source_ids: [ID!]
   """Not required for destroy type"""
   details: PerformerEditDetailsInput
   comment: String
@@ -129,21 +175,21 @@ type PerformerEdit {
   gender: GenderEnum
   added_urls: [URL!]
   removed_urls: [URL!]
-  birthdate: Date
-  ethnicity: String
+  birthdate: FuzzyDate
+  ethnicity: EthnicityEnum
   country: String
-  eye_color: String
+  eye_color: EyeColorEnum
+  hair_color: HairColorEnum
   """Height in cm"""
   height: Int
   measurements: Measurements
-  # TODO - is there a better desciptor for this - boob_job? - enhanced?
-  fake_tits: FakeTitsEnum
+  breast_type: BreastTypeEnum
   career_start_year: Int
   career_end_year: Int
-  added_tattoos: [String!]
-  removed_tattoos: [String!]
-  added_piercings: [String!]
-  removed_piercings: [String!]
+  added_tattoos: [BodyModification!]
+  removed_tattoos: [BodyModification!]
+  added_piercings: [BodyModification!]
+  removed_piercings: [BodyModification!]
 }
 
 type QueryPerformersResultType {
@@ -151,8 +197,29 @@ type QueryPerformersResultType {
   performers: [Performer!]!
 }
 
-input FakeTitsCriterionInput {
-  value: FakeTitsEnum
+input EthnicityCriterionInput {
+  value: EthnicityEnum
+  modifier: CriterionModifier!
+}
+
+input BreastTypeCriterionInput {
+  value: BreastTypeEnum
+  modifier: CriterionModifier!
+}
+
+input EyeColorCriterionInput {
+  value: EyeColorEnum
+  modifier: CriterionModifier!
+}
+
+input HairColorCriterionInput {
+  value: HairColorEnum
+  modifier: CriterionModifier!
+}
+
+input BodyModificationCriterionInput {
+  location: String
+  description: String
   modifier: CriterionModifier!
 }
 
@@ -177,20 +244,21 @@ input PerformerFilterType {
   birth_year: DateCriterionInput
   age: IntCriterionInput
 
-  ethnicity: StringCriterionInput
+  ethnicity: EthnicityCriterionInput
   country: StringCriterionInput
-  eye_color: StringCriterionInput
+  eye_color: EyeColorCriterionInput
+  hair_color: HairColorCriterionInput
   height: IntCriterionInput
 
   cup_size: StringCriterionInput
-  bust_size: IntCriterionInput
+  band_size: IntCriterionInput
   waist_size: IntCriterionInput
   hip_size: IntCriterionInput
 
-  fake_tits: FakeTitsCriterionInput
+  breast_type: BreastTypeCriterionInput
 
   career_start_year: IntCriterionInput
   career_end_year: IntCriterionInput
-  tattoos: StringCriterionInput
-  piercings: StringCriterionInput
+  tattoos: BodyModificationCriterionInput
+  piercings: BodyModificationCriterionInput
 }

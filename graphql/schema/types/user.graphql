@@ -10,8 +10,7 @@ type User {
     id: ID!
     name: String!
     roles: [RoleEnum!]!
-    # TODO - should this be mandatory?
-    email: String
+    email: String!
     api_key: String!
     successful_edits: Int!
     unsuccessful_edits: Int!
@@ -27,7 +26,7 @@ input UserCreateInput {
     # TODO - figure out format for this
     password: String!
     roles: [RoleEnum!]!
-    email: String
+    email: String!
 }
 
 input UserUpdateInput {
